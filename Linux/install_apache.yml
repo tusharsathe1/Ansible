@@ -1,0 +1,38 @@
+---
+  - hosts: linux
+    tasks:
+      - name: Install apache2 on Ubuntu
+        apt:
+          name: apache2
+          state: present
+        when: ansible_distribution == "Ubuntu"
+        become: yes
+
+      - name: Install apache2 on CentOS
+        yum:
+          name: httpd
+          state: present
+        when: ansible_distribution == "CentOS"
+        become: yes
+
+      - name: Check the status of apache on Ubuntu
+        service:
+          name: apache2
+          state: started
+        when: ansible_distribution == "Ubuntu"
+        become: yes
+
+      - name: Check the status of apache on CentOS
+        service:
+          name: httpd
+          state: started
+        when: ansible_distribution == "CentOS"
+        become: yes
+
+      - name: Allow HTTP through the firewall on CentOS
+        firewalld:
+          service: http
+          state: enabled
+          permanent: yes
+          immediate: yes
+        when: ansible_distribution == "CentOS"
