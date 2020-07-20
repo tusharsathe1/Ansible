@@ -1,0 +1,24 @@
+---
+  - hosts: localhost
+    vars_files: /vars/alteon_var.yml
+    tasks:
+      - name: Configure an Interface
+        radware.radware_modules.alteon_config_l3_interface:
+          provider: "{{ radware_provider }}"
+          state: present
+          parameters:
+            index: "{{ item.index }}"
+            ip4_address: "{{ item.ip }}"
+            ip4_subnet: 255.255.255.0
+            ip_ver: ipv4
+            peer_ip: "{{ item.peer_ip }}"
+            state: enabled
+            vlan: "{{ item.vlan }}"
+        loop:
+          - { index: 10, ip: 172.16.1.1, peer_ip: 172.16.1.2, vlan: 10 }
+          - { index: 20, ip: 172.16.2.1, peer_ip: 172.16.2.2, vlan: 20 }
+
+      - name: Apply and Save the configuration
+        radware.radware_modules.alteon_mng_config:
+          provider: "{{ radware_provider }}"
+          command: commit_save
