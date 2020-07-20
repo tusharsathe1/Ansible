@@ -2,7 +2,7 @@
   -
     hosts: localhost
     vars_files:
-      - /home/darkknight/Ansible/Batman/Projects/Alteon/vars/alteon_var.yml
+      - /vars/alteon_var.yml
     tasks:
       - name: Check the pending configuration
         radware.radware_modules.alteon_mng_config:
