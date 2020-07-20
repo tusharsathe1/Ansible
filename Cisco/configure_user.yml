@@ -1,0 +1,14 @@
+---
+  - hosts: cisco
+    tasks:
+      - name: Configure a user
+        ios_user:
+          name: monitor
+          configured_password: password
+          password_type: password
+          privilege: 1
+          state: present
+
+      - name: Save the configuration
+        ios_config:
+          save_when: changed
