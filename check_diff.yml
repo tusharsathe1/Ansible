@@ -1,0 +1,28 @@
+---
+  -
+    hosts: localhost
+    vars_files:
+      - /home/darkknight/Ansible/Batman/Projects/Alteon/vars/alteon_var.yml
+    tasks:
+      - name: Check the pending configuration
+        radware.radware_modules.alteon_mng_config:
+          provider: "{{ radware_provider }}"
+          command: diff
+        register: diff
+
+      - name: Gather system facts
+        radware.radware_modules.alteon_device_facts:
+          provider: "{{ radware_provider }}"
+          gather_facts:
+            - "!all"
+            - "system_info"
+        register: system_info
+
+      - name: Display pending configuration
+        debug:
+          msg: "{{ diff.diff }}"
+
+      - name: Display system info
+        debug:
+          msg: "{{ system_info }}"
+...
