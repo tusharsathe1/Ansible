@@ -1,0 +1,30 @@
+---
+  - hosts: localhost
+    vars_files: /vars/alteon_var.yml
+    tasks:
+      - name: Configure a virtual server
+        radware.radware_modules.alteon_config_virtual_server:
+          provider: "{{ radware_provider }}"
+          state: "{{ state }}"
+          parameters:
+            index: V1
+            ip_address: 172.16.1.10
+            state: enabled
+            return_to_src_mac: enabled
+
+      - name: Configure a virtual service
+        radware.radware_modules.alteon_config_virtual_service:
+          provider: "{{ radware_provider }}"
+          state: "{{ state }}"
+          parameters:
+            application_type: http
+            delayed_binding: forceproxy
+            index: V1
+            server_group_name: G1
+            service_port: 80
+            service_index: 1
+
+      - name: Apply and Save the configuration
+        radware.radware_modules.alteon_mng_config:
+          provider: "{{ radware_provider }}"
+          command: commit_save
