@@ -1,0 +1,54 @@
+---
+  -
+    hosts: linux
+    tasks:
+      - name: Install PHP on Ubuntu
+        apt:
+          name:
+            - php
+            - libapache2-mod-php
+            - php-mysql
+          state: present
+        become: yes
+        when: ansible_distribution == "Ubuntu"
+
+      - name: Install PHP on CentOS
+        yum:
+          name:
+            - php
+            - php-mysql
+          state: present
+        become: yes
+        when: ansible_distribution == "CentOS"
+
+      - name: Restart Apache on Ubuntu
+        service:
+          name: apache2
+          state: restarted
+        become: yes
+        when: ansible_distribution == "Ubuntu"
+
+      - name: Restart Apache on CentOS
+        service:
+          name: httpd
+          state: restarted
+        become: yes
+        when: ansible_distribution == "CentOS"
+
+      - name: create a PHP script on Ubuntu
+        blockinfile:
+          path: /var/www/html/info.php
+          create: yes
+          block: |
+           <?php
+           phpinfo();
+           ?>
+        become: yes
+        when: ansible_distribution == "Ubuntu"
+
+      - name: Copy PHP script to CentOS
+        copy:
+          dest: /var/www/html/info.php
+          src: /home/darkknight/Ansible/info.php
+        become: yes
+        when: ansible_distribution == "CentOS"
