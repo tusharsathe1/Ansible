@@ -1,0 +1,32 @@
+---
+  - hosts: localhost
+    vars_files: /vars/alteon_var.yml
+    tasks:
+      - name: Fetch the certificate
+        radware.radware_modules.alteon_config_ssl_cert:
+          provider: "{{ radware_provider }}"
+          state: read
+          parameters:
+            index: WebManagementCert
+            certificate_type: serverCertificate
+        register: cert
+
+      - name: Save the certificate locally
+        vars:
+          content: "{{ cert['obj']['content'] }}"
+        blockinfile:
+          path: /Alteon/cert.crt
+          create: yes
+          insertafter: EOF
+          block: "{{ content }}"
+
+      - name: Collect certificate attributes
+        openssl_certificate_info:
+          path: /Alteon/cert.crt
+        register: cert_info
+
+      - name: Display the certificate validity
+        debug:
+          msg: "The certificate expires in: {{ expire_days }} days."
+        vars:
+          expire_days: "{{ (( cert_info.not_after | to_datetime('%Y%m%d%H%M%SZ')) - (ansible_date_time.iso8601 | to_datetime('%Y-%m-%dT%H:%M:%SZ')) ).days }}"
