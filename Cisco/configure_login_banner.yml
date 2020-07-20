@@ -1,0 +1,12 @@
+---
+  - hosts: cisco
+    tasks:
+      - name: Configure Login Banner
+        ios_banner:
+          banner: login
+          state: present
+          text: |
+            # # # # # # # # # # # # # # # # # # # # # # # # #
+            #   Unautorized access is strictly prohibited   #
+            #                                               #
+            # # # # # # # # # # # # # # # # # # # # # # # # #
