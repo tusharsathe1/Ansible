@@ -1,0 +1,20 @@
+all:
+  hosts:
+    Node1:
+    CentOS1:
+    Ubuntu-C:
+    Router1:
+  children:
+    ubuntu:
+      hosts:
+        Node1:
+    centos:
+      hosts:
+        CentOS1:
+    linux:
+      children:
+        ubuntu:
+        centos:
+    cisco:
+      hosts:
+        Router1:
