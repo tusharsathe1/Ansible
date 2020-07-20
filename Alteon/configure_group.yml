@@ -1,0 +1,18 @@
+---
+  - hosts: localhost
+    vars_files: /vars/alteon_var.yml
+    tasks:
+      - name: Configure Real Servers
+        radware.radware_modules.alteon_config_server_group:
+          provider: "{{ radware_provider }}"
+          state: present
+          parameters:
+            index: G1
+            server_names:
+              - S1
+              - S2
+
+      - name: Apply and Save the configuration
+        radware.radware_modules.alteon_mng_config:
+          provider: "{{ radware_provider }}"
+          command: commit_save
